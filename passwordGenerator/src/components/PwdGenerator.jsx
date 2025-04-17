@@ -1,39 +1,46 @@
 import React, { useEffect } from 'react'
 import { useState, useCallback, useRef } from 'react'
 
-function PwdGenerator() {
+function PwdGenerator() { // Defining the PwdGenerator functional component
 
+    // State to manage the password length, default is 8
     const [length, setLength] = useState(8)
+    // State to toggle inclusion of numbers in the password
     const [numberAllowed, setNumberAllowed] = useState(false)
+    // State to toggle inclusion of special characters in the password
     const [charAllowed, setCharAllowed] = useState(false)
+    // State to store the generated password
+    // The password is generated using the useCallback hook to memoize the function
     const [Password, setPassword] = useState('')
 
     //useRef  hook
+    // useRef to reference the password input field for clipboard operations
     const passwordRef = useRef(null)
 
+    // Memoized function to generate a password
     const passwordGenerator = useCallback(() => {
-        let pass = ""
-        let str = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        if (numberAllowed) str += "0123456789"
-        if (charAllowed) str += "!@#$%^&*()_+[]{}|;:,.<>?"
+        let pass = "" // Initialize an empty password string
+        let str = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" // Base string with alphabets
+        if (numberAllowed) str += "0123456789" // Append numbers if allowed
+        if (charAllowed) str += "!@#$%^&*()_+[]{}|;:,.<>?" // Append special characters if allowed
 
-        for (let i = 1; i <= length; i++) {
-            let char = Math.floor(Math.random() * str.length + 1)
-            pass += str.charAt(char)
+        for (let i = 1; i <= length; i++) { // Loop to generate a password of the specified length
+            let char = Math.floor(Math.random() * str.length + 1) // Randomly select a character index
+            pass += str.charAt(char) // Append the character to the password
         }
-        setPassword(pass)
-    }, [length, numberAllowed, charAllowed, setPassword])
+        setPassword(pass) // Update the password state
+    }, [length, numberAllowed, charAllowed, setPassword]) // Dependencies for the useCallback hook
 
-    const copyPasswordToClipboard = useCallback(() => {
-        passwordRef.current?.select()
-        passwordRef.current?.setSelectionRange(0, 20) 
-        window.navigator.clipboard.writeText(Password)
+    const copyPasswordToClipboard = useCallback(() => { // Memoized function to copy the password to the clipboard
+        passwordRef.current?.select() // Select the password input field
+        passwordRef.current?.setSelectionRange(0, 20) // Set the selection range for the input field
+        window.navigator.clipboard.writeText(Password) // Write the password to the clipboard
         
-    }, [Password])
+    }, [Password]) // Dependency for the useCallback hook
 
-    useEffect(() => {
-        passwordGenerator()
-    }, [length, numberAllowed, charAllowed, passwordGenerator])
+    useEffect(() => { // useEffect to generate a password whenever dependencies change
+        passwordGenerator() // Call the password generator function
+    }, [length, numberAllowed, charAllowed, passwordGenerator]) // Dependencies for the useEffect hook
 
     return (
         <>
